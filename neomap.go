@@ -41,7 +41,13 @@ func main() {
 	mapping := makeMappingArray(neoGeoA, neoGeoB, neoGeoC, neoGeoD)
 
 	// Patch the file
-	patchFile(exePath, mapping)
+	// First try the byte offset and values for the GOG and Amazon releases
+	fmt.Println("\nTrying patch for GOG and Amazon releases...")
+	if !patchFile(exePath, mapping, [4]int{0x239D0, 0x239D4, 0x239D8, 0x239DC}, [4]byte{0x15, 0x1c, 0x23, 0x2a}) {
+		// if that didn't work, try again with the offsets for the Humble Bundle release
+		fmt.Println("\nTrying patch for Humble releases...")
+		patchFile(exePath, mapping, [4]int{0x82F4, 0x82F8, 0x82FC, 0x8300}, [4]byte{0x28, 0x2f, 0x36, 0x3d})
+	}
 }
 
 func buttonIsValid(letter string) bool {
@@ -96,11 +102,7 @@ func generateOutputFilename(inputFilePath string) string {
 	return filepath.Join(dir, outputFile)
 }
 
-func patchFile(exePath string, mapping []int) bool {
-
-	xboxButtonJumpTableOffsets := [4]int{0x239D0, 0x239D4, 0x239D8, 0x239DC} // Xbox buttons A, B, X, Y
-	neoGeoHandlerBytes := [4]byte{0x15, 0x1c, 0x23, 0x2a}                    // NeoGeo code A, B, C, D
-
+func patchFile(exePath string, mapping []int, xboxButtonJumpTableOffsets [4]int, neoGeoHandlerBytes [4]byte) bool {
 	// Does the file exist?
 	if !fileExists(exePath) {
 		fmt.Printf("\"%s\" does not exist.\n", exePath)
@@ -115,7 +117,7 @@ func patchFile(exePath string, mapping []int) bool {
 	}
 
 	// Check file size. The size of the exe varies, but it should be at least
-	// 0x239DC + 1 bytes since we read from that offset.
+	// the size of the last offset +1 since we read from that offset.
 	if len(byteData) < (xboxButtonJumpTableOffsets[3] + 1) {
 		fmt.Printf("File \"%s\" is too small for this patch. It is %d bytes.\n", exePath, len(byteData))
 		return false
@@ -146,7 +148,7 @@ func patchFile(exePath string, mapping []int) bool {
 
 	// Get the output file name
 	outputFileName := generateOutputFilename(exePath)
-	fmt.Printf("Writing patched file to \"%s\"...\n", outputFileName)
+	fmt.Printf("\nWriting patched file to \"%s\"...\n", outputFileName)
 
 	file, err := os.Create(outputFileName)
 	if err != nil {
