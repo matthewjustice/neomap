@@ -114,9 +114,10 @@ func patchFile(exePath string, mapping []int) bool {
 		return false
 	}
 
-	// Check file size
-	if len(byteData) != 1416704 {
-		fmt.Printf("File \"%s\" isn't the expected size.\n", exePath)
+	// Check file size. The size of the exe varies, but it should be at least
+	// 0x239DC + 1 bytes since we read from that offset.
+	if len(byteData) < (xboxButtonJumpTableOffsets[3] + 1) {
+		fmt.Printf("File \"%s\" is too small for this patch. It is %d bytes.\n", exePath, len(byteData))
 		return false
 	}
 
