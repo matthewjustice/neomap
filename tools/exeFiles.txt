@@ -1,3 +1,31 @@
-C:\Program Files (x86)\NeoGeo 25th Anniversery\KingOfFighters2002\KingofFighters2002.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\ArtOfFighting2\ArtOfFighting2.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\BaseballStars2\BaseballStars2.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\BlazingStar\BlazingStar.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\FatalFurySpecial\FatalFurySpecial.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\GarouMOTW\GarouMOTW.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\Ironclad\Ironclad.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\KingOfFighters2000\KingOfFighters2000.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\KingOfFighters2002\KingOfFighters2002.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\KingOfTheMonsters\KingOfTheMonsters.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\LastBlade\LastBlade.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\MetalSlug\MetalSlug.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\MetalSlug2\MetalSlug2.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\MetalSlug3\MetalSlug3.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\MetalSlugX\MetalSlugX.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\NeoTurfMasters\NeoTurfMasters.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\Pulstar\Pulstar.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\RealBoutFatalFury2\RealBoutFatalFury2.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\SamuraiShodown2\SamuraiShodown2.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\SamuraiShodown5Special\SamuraiShodown5Special.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\Sengoku3\Sengoku3.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\ShockTroopers\ShockTroopers.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\ShockTroopers2\ShockTroopers2.exe
+C:\Program Files (x86)\NeoGeo 25th Anniversery\TwinkleStarSprites\TwinkleStarSprites.exe
 C:\GOG Games\The King of Fighters 2002\KingOfFighters2002.exe
+C:\Amazon Games\Library\Art of Fighting 2\ArtOfFighting2.exe
+C:\Amazon Games\Library\Blazing Star\BlazingStar.exe
+C:\Amazon Games\Library\Fatal Fury Special\FatalFurySpecial.exe
+C:\Amazon Games\Library\Pulstar\Pulstar.exe
+C:\Amazon Games\Library\Samurai Shodown II\SamuraiShodown2.exe
+C:\Amazon Games\Library\The King of Fighters 2000\KingOfFighters2000.exe
 C:\Amazon Games\Library\The King of Fighters 2002\KingOfFighters2002.exe
