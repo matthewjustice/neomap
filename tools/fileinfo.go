@@ -90,6 +90,8 @@ func examineExecutableFile(exePath string, csvMode bool) {
 		},
 	}
 
+	jumpTableFound := false
+
 	// Check for the known jump tables in this file.
 	for _, table := range knownJumpTables {
 		readValues := readUInt32ArrayLittleEndian(byteData, table.offset, 4)
@@ -117,10 +119,18 @@ func examineExecutableFile(exePath string, csvMode bool) {
 					readValues[2],
 					readValues[3])
 			}
+
+			jumpTableFound = true
+			break
 		}
 	}
 
 	if csvMode {
+		if !jumpTableFound {
+			// Put in blank CSV values
+			fmt.Print(",,,,,")
+		}
+
 		fmt.Printf("%s\n", dir)
 	}
 }
