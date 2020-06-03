@@ -46,7 +46,11 @@ func main() {
 	if !patchFile(exePath, mapping, [4]int{0x239D0, 0x239D4, 0x239D8, 0x239DC}, [4]byte{0x15, 0x1c, 0x23, 0x2a}) {
 		// if that didn't work, try again with the offsets for the Humble Bundle release
 		fmt.Println("\nTrying patch for Humble releases...")
-		patchFile(exePath, mapping, [4]int{0x82F4, 0x82F8, 0x82FC, 0x8300}, [4]byte{0x28, 0x2f, 0x36, 0x3d})
+		if !patchFile(exePath, mapping, [4]int{0x82F4, 0x82F8, 0x82FC, 0x8300}, [4]byte{0x28, 0x2f, 0x36, 0x3d}) {
+			// if that didn't work, try again with the offsets for the Humble Bundle release
+			fmt.Println("\nTrying patch for Humble releases (Twinkle Star Sprites)...")
+			patchFile(exePath, mapping, [4]int{0x8134, 0x8138, 0x813C, 0x8140}, [4]byte{0x68, 0x6f, 0x76, 0x7d})
+		}
 	}
 }
 

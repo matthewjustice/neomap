@@ -88,6 +88,10 @@ func examineExecutableFile(exePath string, csvMode bool) {
 			offset: 0x000239D0, // GOG and Amazon releases
 			values: [4]uint32{0x00424515, 0x0042451C, 0x00424523, 0x0042452A},
 		},
+		jumpTable{
+			offset: 0x00008134, // Humble Bundle - Twinkle Star Sprites (and maybe older versions of other titles?)
+			values: [4]uint32{0x00408C68, 0x00408C6F, 0x00408C76, 0x00408C7D},
+		},
 	}
 
 	jumpTableFound := false
