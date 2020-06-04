@@ -8,11 +8,11 @@ Here we'll cover what you need to use neomap.
 
 ### Introduction
 
-Neomap applies to various Dotemu releases of Neo Geo game for Windows. **The problem** it addresses: these games don't include a way to remap your controller buttons; the mapping are are hard-coded. **The fix**: neomap works by modifying the button mapping within the game's executable code. Neomap doesn't change the original exe file on disk; it creates a new exe with updated code.
+Neomap applies to various Dotemu releases of Neo Geo games for Windows. **The problem** it addresses: these games don't include a way to remap your controller buttons; the mapping are hard-coded. **The fix**: neomap works by modifying the button mapping within the game's executable code. Neomap doesn't change the original exe file on disk; it creates a new exe with updated code.
 
 ### Identifying a Game to Update
 
-First, you need one of the games in question; one of the Dotemu-released PC ports of classic Neo Geo titles. These have been included with the 
+First, you need one of the games in question, one of the Dotemu-released PC ports of classic Neo Geo titles. These have been included with the 
 [Humble NEOGEO 25th Anniversary Bundle](https://www.pcmag.com/news/dont-miss-the-neogeo-25th-anniversary-humble-bundle) (in 2015), as separate 
 [titles on GOG](https://www.gog.com/news/release_15_snk_neogeo_classics) (since 2017), and most recently as a 
 [free giveaway](https://www.gamespot.com/articles/amazon-prime-subscribers-can-get-16-games-for-free/1100-6476703/) to Amazon Twitch Prime members (in 2020). 
@@ -46,7 +46,7 @@ Once you know the location of the executable file for your game and your desired
 1. Download the [latest version of neomap](https://github.com/matthewjustice/neomap/releases/latest), packaged as a zip file.
 2. Extract the zip file contents, for example to `c:\temp\neomap.exe`.
 3. Open a command prompt window. 
-NOTE: You many to run as administrator to update games under `Program Files`.
+NOTE: You may need to run as administrator to update games under `Program Files`.
 4. Change directories to the folder from step 2. For example:
     ```
     C:\>cd \temp
@@ -63,6 +63,7 @@ NOTE: You many to run as administrator to update games under `Program Files`.
 7. The original game exe file will be unmodified. To play the patched version with remapped buttons, run the exe file specified in the previous steps (`KingOfFighters2002-remap-1591274072.exe` in this case).
 8. Once you are satisfied that the updated version works, you can back up your original, unmodified exe file, and replace it with the modified version. This is optional.
 9. If running `neomap.exe` gave you access denied errors, try again from an elevated command prompt (run as administrator).
+10. Neomap hasn't been tested against every version of every Dotemu Neo Geo game, so there may be some games that it can't update. In those case, please [file an issue](https://github.com/matthewjustice/neomap/issues).
 
 ### Disclaimer
 
