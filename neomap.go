@@ -9,6 +9,12 @@ import (
 	"time"
 )
 
+type patchData struct {
+	offset int
+	values [4]byte
+	label  string
+}
+
 func main() {
 	// Ensure that enough command line args were passed
 	if len(os.Args) < 6 {
@@ -17,11 +23,11 @@ func main() {
 	}
 
 	// Assign and verify command line args
-	exePath := os.Args[1]
-	neoGeoA := os.Args[2]
-	neoGeoB := os.Args[3]
-	neoGeoC := os.Args[4]
-	neoGeoD := os.Args[5]
+	neoGeoA := os.Args[1]
+	neoGeoB := os.Args[2]
+	neoGeoC := os.Args[3]
+	neoGeoD := os.Args[4]
+	exePath := os.Args[5]
 
 	fmt.Println()
 	fmt.Println("Checking inputs...")
@@ -40,16 +46,29 @@ func main() {
 
 	mapping := makeMappingArray(neoGeoA, neoGeoB, neoGeoC, neoGeoD)
 
-	// Patch the file
-	// First try the byte offset and values for the GOG and Amazon releases
-	fmt.Println("\nTrying patch for GOG and Amazon releases...")
-	if !patchFile(exePath, mapping, [4]int{0x239D0, 0x239D4, 0x239D8, 0x239DC}, [4]byte{0x15, 0x1c, 0x23, 0x2a}) {
-		// if that didn't work, try again with the offsets for the Humble Bundle release
-		fmt.Println("\nTrying patch for Humble releases...")
-		if !patchFile(exePath, mapping, [4]int{0x82F4, 0x82F8, 0x82FC, 0x8300}, [4]byte{0x28, 0x2f, 0x36, 0x3d}) {
-			// if that didn't work, try again with the offsets for the Humble Bundle release
-			fmt.Println("\nTrying patch for Humble releases (Twinkle Star Sprites)...")
-			patchFile(exePath, mapping, [4]int{0x8134, 0x8138, 0x813C, 0x8140}, [4]byte{0x68, 0x6f, 0x76, 0x7d})
+	patches := []patchData{
+		patchData{
+			offset: 0x000082F4, // Humble Bundle release
+			values: [4]byte{0x28, 0x2f, 0x36, 0x3d},
+			label:  "Humble Bundle",
+		},
+		patchData{
+			offset: 0x000239D0, // GOG and Amazon releases
+			values: [4]byte{0x15, 0x1C, 0x23, 0x2A},
+			label:  "GOG and Amazon/Twitch",
+		},
+		patchData{
+			offset: 0x00008134, // Humble Bundle - Twinkle Star Sprites (and maybe older versions of other titles?)
+			values: [4]byte{0x68, 0x6F, 0x76, 0x7D},
+			label:  "Humble Bundle (older build)",
+		},
+	}
+
+	for _, patch := range patches {
+		fmt.Printf("\nTrying patch for %s release...\n", patch.label)
+		if patchFile(exePath, mapping, patch.offset, patch.values) {
+			// success - we can exit the loop
+			break
 		}
 	}
 }
@@ -106,7 +125,7 @@ func generateOutputFilename(inputFilePath string) string {
 	return filepath.Join(dir, outputFile)
 }
 
-func patchFile(exePath string, mapping []int, xboxButtonJumpTableOffsets [4]int, neoGeoHandlerBytes [4]byte) bool {
+func patchFile(exePath string, mapping []int, xboxButtonJumpTableOffset int, neoGeoHandlerBytes [4]byte) bool {
 	// Does the file exist?
 	if !fileExists(exePath) {
 		fmt.Printf("\"%s\" does not exist.\n", exePath)
@@ -121,8 +140,9 @@ func patchFile(exePath string, mapping []int, xboxButtonJumpTableOffsets [4]int,
 	}
 
 	// Check file size. The size of the exe varies, but it should be at least
-	// the size of the last offset +1 since we read from that offset.
-	if len(byteData) < (xboxButtonJumpTableOffsets[3] + 1) {
+	// the size of xboxButtonJumpTableOffset + 0xC + 1
+	// since we read from the +0xC offset.
+	if len(byteData) < (xboxButtonJumpTableOffset + 0xD) {
 		fmt.Printf("File \"%s\" is too small for this patch. It is %d bytes.\n", exePath, len(byteData))
 		return false
 	}
@@ -130,29 +150,29 @@ func patchFile(exePath string, mapping []int, xboxButtonJumpTableOffsets [4]int,
 	// Check byte values before we change them
 	bytesOK := true
 	for i := 0; i < 4; i++ {
-		checkByte := byteData[xboxButtonJumpTableOffsets[i]]
+		checkByte := byteData[xboxButtonJumpTableOffset+(i*4)]
 		if checkByte != neoGeoHandlerBytes[i] {
-			fmt.Printf("byte at 0x%08x is 0x%02x, expected 0x%02x\n", xboxButtonJumpTableOffsets[i], checkByte, neoGeoHandlerBytes[i])
+			fmt.Printf("byte at 0x%08x is 0x%02x, expected 0x%02x\n", xboxButtonJumpTableOffset+(i*4), checkByte, neoGeoHandlerBytes[i])
 			bytesOK = false
 			break
 		}
 	}
 
 	if !bytesOK {
-		fmt.Printf("File \"%s\" had an unexpected byte value.\n", exePath)
+		fmt.Printf("File \"%s\" isn't the right version for this patch.\n", exePath)
 		return false
 	}
 
 	// Each index in the mapping array represents the Xbox button number
 	// and each value represents the NeoGeo button number
 	for xbox, neogeo := range mapping {
-		byteData[xboxButtonJumpTableOffsets[xbox]] = neoGeoHandlerBytes[neogeo]
-		fmt.Printf("byte at 0x%08x updated to 0x%02x\n", xboxButtonJumpTableOffsets[xbox], neoGeoHandlerBytes[neogeo])
+		byteData[xboxButtonJumpTableOffset+(xbox*4)] = neoGeoHandlerBytes[neogeo]
+		fmt.Printf("byte at 0x%08x updated to 0x%02x\n", xboxButtonJumpTableOffset+(xbox*4), neoGeoHandlerBytes[neogeo])
 	}
 
 	// Get the output file name
 	outputFileName := generateOutputFilename(exePath)
-	fmt.Printf("\nWriting patched file to \"%s\"...\n", outputFileName)
+	fmt.Printf("\nWriting patched file to \"%s\"\n", outputFileName)
 
 	file, err := os.Create(outputFileName)
 	if err != nil {
@@ -174,13 +194,13 @@ func patchFile(exePath string, mapping []int, xboxButtonJumpTableOffsets [4]int,
 
 func printHelp() {
 	fmt.Println()
-	fmt.Println("neomap remaps controller buttons in DotEmu's Neo Geo games for Windows.")
+	fmt.Println("neomap remaps controller buttons in Dotemu's Neo Geo games for Windows.")
 	fmt.Println()
-	fmt.Println("syntax: neomap.exe [exePath] [A] [B] [C] [D]")
+	fmt.Println("syntax: neomap.exe [A] [B] [C] [D] [exePath]")
 	fmt.Println("  where")
-	fmt.Println("  - exePath is the full path to the DotEmu NeoGeo executable to patch.")
 	fmt.Println("  - A, B, C, D are the Xbox controller button letters you want to map")
 	fmt.Println("    to NeoGeo buttons A, B, C, D. Valid Xbox buttons are: A, B, X, Y")
+	fmt.Println("  - exePath is the full path to the DotEmu NeoGeo executable to patch.")
 	fmt.Println()
 	fmt.Println("For example, let's say you want to update King of Fighter 2002 as follows:")
 	fmt.Println("  - Xbox X button is mapped to NeoGeo A button")
@@ -188,8 +208,10 @@ func printHelp() {
 	fmt.Println("  - Xbox Y button is mapped to NeoGeo C button")
 	fmt.Println("  - Xbox B button is mapped to NeoGeo D button")
 	fmt.Println("Then run the tool like so:")
-	fmt.Println("neomap.exe c:\\path\\KingOfFighters2002.exe X A Y B")
+	fmt.Println("neomap.exe X A Y B c:\\path\\KingOfFighters2002.exe")
 	fmt.Println()
 	fmt.Println("This will attempt to write a new, patched exe file to the same folder as the")
 	fmt.Println("original game. Your original exe file won't be modified.")
+	fmt.Println()
+	fmt.Println("neomap build: 2020-06-04")
 }
