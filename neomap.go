@@ -213,5 +213,5 @@ func printHelp() {
 	fmt.Println("This will attempt to write a new, patched exe file to the same folder as the")
 	fmt.Println("original game. Your original exe file won't be modified.")
 	fmt.Println()
-	fmt.Println("neomap build: 2020-06-04")
+	fmt.Println("neomap build version: 2020.06.04")
 }
