@@ -43,7 +43,7 @@ Your button mapping configuration, for the above example, will be `X A Y B`. Thi
 
 Once you know the location of the executable file for your game and your desired button mapping, you can update the game.
 
-1. Download the latest version of neomap.
+1. Download the [latest version of neomap](https://github.com/matthewjustice/neomap/releases/latest), packaged as a zip file.
 2. Extract the zip file contents, for example to `c:\temp\neomap.exe`.
 3. Open a command prompt window. 
 NOTE: You many to run as administrator to update games under `Program Files`.
